@@ -109,5 +109,4 @@ public class Soundex
     }
 
 }
-check if the ccn is not more than 3
  
