@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-
+ 
 public class Soundex
 {
 public static string GenerateSoundex(string name)
@@ -9,22 +9,21 @@ public static string GenerateSoundex(string name)
     {
         return string.Empty;
     }
-    
     StringBuilder soundex = InitializeTheSoundex(name);
     char prevCode = GetSoundexCode(name[0]);
-
+ 
     AppendingSoundexCharacters(name, soundex, ref prevCode);
     SoundexCode(ref soundex);
     return soundex.ToString();
 }
-
+ 
 public static StringBuilder InitializeTheSoundex(string name)
 {
     StringBuilder soundex = new StringBuilder();
     soundex.Append(char.ToUpper(name[0]));
     return soundex;
 }
-
+ 
 public static void AppendingSoundexCharacters(string name, StringBuilder soundex, ref char prevCode)
 {
     for (int i = 1; i < name.Length && soundex.Length < 4; i++)
@@ -43,10 +42,8 @@ public static void Characters(char character, StringBuilder soundex, ref char pr
         prevCode = code;
     } 
     }
-    
 }
 public static bool AppendCode(char code, char prevCode) => code != 0 && code != prevCode;
-    
 public static void SoundexCode(ref StringBuilder soundex)
 {
     while (soundex.Length < 4)
@@ -68,5 +65,4 @@ public static char GetSoundexCode(char character)
          _ => '0'
      };
 }
-  
 }
