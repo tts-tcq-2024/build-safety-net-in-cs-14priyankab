@@ -1,112 +1,72 @@
+using System;
+using System.Text;
+
 public class Soundex
-
 {
-
-   public static string GenerateSoundex(string name)
-
+public static string GenerateSoundex(string name)
+{
+    if(string.IsNullOrEmpty(name))
     {
-
-        return EmptyStringChecker(name);
- 
-        StringBuilder soundex = new StringBuilder();
-
-        soundex.Append(char.ToUpper(name[0]));
-
-        SoundexCodeAppender(name, soundex);
- 
-        while (soundex.Length < 4)
-
-        {
-
-            soundex.Append('0');
-
-        }
- 
-        return soundex.ToString();
-
+        return string.Empty;
     }
- 
-    private static string EmptyStringChecker(string value)
+    
+    StringBuilder soundex = InitializeTheSoundex(name);
+    char prevCode = GetSoundexCode(name[0]);
 
-    {
-
-        if (string.IsNullOrEmpty(value))
-
-            return string.Empty;
-
-    }
- 
-    private static void SoundexCodeAppender(string name, StringBuilder soundex)
-
-    {
-
-        char prevCode = GetSoundexCode(name[0]);
-
-        for (int i = 0; i < IsValidNameAndSoundex(name, soundex)) ; i++)
-
-        {
-
-            char code = GetSoundexCode(name[i]);
-
-            if (IsValidSoundexCode(code, prevCode))
-
-            {
-
-                soundex.Append(code);
-
-                prevCode = code;
-
-            }
-
-        }
-
-    }
- 
-    private static bool IsValidSoundexCode(string code, string prevCode)
-
-    {
-
-        return code != '0' && code != prevCode;
-
-    }
- 
-    private static bool IsValidNameAndSoundex(string name, StringBuilder Soundex)
-
-    {
-
-        return name.Length && Soundex.Length < 4;
-
-    }
- 
-    private static char GetSoundexCode(char c)
-
-    {
-
-        c = char.ToUpper(c);
-
-        var soundMap = new Dictionary<char, char>
-
-        {
-
-             { 'B', '1' }, { 'F', '1' }, { 'P', '1' }, { 'V', '1' },
- 
-             { 'C', '2' }, { 'G', '2' }, { 'J', '2' }, { 'K', '2' },
-
-             { 'Q', '2' }, { 'S', '2' }, { 'X', '2' }, { 'Z', '2' },
- 
-             { 'D', '3' }, { 'T', '3' },
- 
-             { 'L', '4' },
- 
-             { 'M', '5' }, { 'N', '5' },
- 
-             { 'R', '6' }
-
-        };
- 
-        return soundMap.TryGetValue(c, out char codeValue) ? codeValue : '0';
-
-    }
-
+    AppendingSoundexCharacters(name, soundex, ref prevCode);
+    SoundexCode(ref soundex);
+    return soundex.ToString();
 }
- 
+
+public static StringBuilder InitializeTheSoundex(string name)
+{
+    StringBuilder soundex = new StringBuilder();
+    soundex.Append(char.ToUpper(name[0]));
+    return soundex;
+}
+
+public static void AppendingSoundexCharacters(string name, StringBuilder soundex, ref char prevCode)
+{
+    for (int i = 1; i < name.Length && soundex.Length < 4; i++)
+    {
+        Characters(name[i], soundex, ref prevCode); 
+    }
+}
+public static void Characters(char character, StringBuilder soundex, ref char prevCode)
+{
+   if(char.IsLetter(character))
+    {
+       char code = GetSoundexCode(character);
+    if (AppendCode(code, prevCode))
+    {
+        soundex.Append(code);
+        prevCode = code;
+    } 
+    }
+    
+}
+public static bool AppendCode(char code, char prevCode) => code != 0 && code != prevCode;
+    
+public static void SoundexCode(ref StringBuilder soundex)
+{
+    while (soundex.Length < 4)
+    {
+        soundex.Append('0');
+    }
+}
+public static char GetSoundexCode(char character)
+{
+    character = char.ToUpper(character);
+    return character switch
+    {
+        'B' or 'F' or 'P' or 'V' => '1',
+        'C' or 'G' or 'J' or 'K' or 'Q' or 'S' or 'X' or 'Z' => '2',
+        'D' or 'T' => '3',
+        'L' => '4',
+        'M' or 'N' => '5',
+        'R' => '6',
+         _ => '0'
+     };
+}
+  
+}
